@@ -32,6 +32,6 @@ class User extends Authenticatable
     }
 
     public function grupo() {
-        return $this->belongsTo( 'App\Models\Grupo' );
+        return $this->belongsTo( 'App\Models\Grupo', 'grupo_id', 'idGrupo' );
     }
 }

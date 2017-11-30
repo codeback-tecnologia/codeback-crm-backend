@@ -11,6 +11,11 @@ class Desenvolvedores extends Controller {
 
     public function listar( $msg = false ) {
         $desenvolvedores = Desenvolvedor::all();
+
+        foreach ($desenvolvedores as $item) {
+            var_dump( $item->user->name );
+        }
+        die;
         return view( 'desenvolvedores/grid', [ 'desenvolvedores' => $desenvolvedores, 'msg' => $msg, 'exibirModal' => false ] );
     }
 

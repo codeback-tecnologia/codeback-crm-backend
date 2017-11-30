@@ -19,4 +19,8 @@ class Grupo extends Model {
         return $this->hasMany( 'App\User' );
     }
 
+    public function item() {
+        return $this->hasMany( 'App\Models\Item', 'grupo_id', 'idGrupo' );
+    }
+
 }
