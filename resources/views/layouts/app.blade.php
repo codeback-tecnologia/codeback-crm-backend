@@ -34,12 +34,16 @@
                             {{ config('app.name', 'Codeback') }}
                         </a>
                     @else
-                        @forelse( Auth::user()->grupo->item as $item )
-                            @if( $item->componente->nome == 'Navbar' )
-                                <a class="navbar-brand" href="/{{ $item->end_point }}">
-                                    {{ $item->nome }}
-                                </a>
-                            @endif
+                        <a class="nav-link" href="{{ url('/') }}">Home <span class="sr-only">(current)</span></a>
+                        @forelse( Auth::user()->grupos  as $grupo)
+                            @forelse( $grupo->item as $item )
+                                @if( $item->componente->nome == 'Navbar' )
+                                    <a class="nav-link" href="/{{ $item->end_point }}">
+                                        {{ $item->nome }}
+                                    </a>
+                                @endif
+                            @empty
+                            @endforelse
                         @empty
                         @endforelse
                     @endguest
@@ -65,14 +69,17 @@
                                 </a>
 
                                 <ul class="dropdown-menu">
-                                    @forelse( Auth::user()->grupo->item as $item )
-                                        @if( $item->componente->nome == 'Dropdown' )
-                                            <li>
-                                                <a class="navbar-brand" href="/{{ $item->end_point }}">
-                                                    {{ $item->nome }}
-                                                </a>
-                                            </li>
-                                        @endif
+                                    @forelse( Auth::user()->grupos  as $grupo)
+                                        @forelse( $grupo->item as $item )
+                                            @if( $item->componente->nome == 'Dropdown' )
+                                                <li>
+                                                    <a href="/{{ $item->end_point }}">
+                                                        {{ $item->nome }}
+                                                    </a>
+                                                </li>
+                                            @endif
+                                        @empty
+                                        @endforelse
                                     @empty
                                     @endforelse
                                 

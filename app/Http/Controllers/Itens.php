@@ -9,8 +9,15 @@ use App\Models\Item;
 
 class Itens extends Controller {
     
+    public $grupo = 'Administradores';
+    
     // lista
     public function listar( $msg = false ) {
+
+        // verifica se o usuario tem permissão
+        if( !$this->hasPermission( $this->grupo )) {
+            abort( 404 );            
+        }
         $itens = Item::all();
         return view( 'itens/grid', [ 'itens' => $itens, 'msg' => $msg, 'exibirForm' => false ] );
     }

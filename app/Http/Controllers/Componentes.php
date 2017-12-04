@@ -7,8 +7,15 @@ use App\Models\Componente;
 
 class Componentes extends Controller {
     
+    public $grupo = 'Administradores';
+    
     // lista
     public function listar( $msg = false ) {
+
+        // verifica se o usuario tem permissão
+        if( !$this->hasPermission( $this->grupo )) {
+            abort( 404 );            
+        }
         $componentes = Componente::all();
         return view( 'componentes/grid', [ 'componentes' => $componentes, 'msg' => $msg, 'exibirForm' => false ] );
     }

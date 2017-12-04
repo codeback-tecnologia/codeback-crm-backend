@@ -7,8 +7,15 @@ use App\Models\Grupo;
 
 class Grupos extends Controller {
     
+    public $grupo = 'Administradores';
+    
     // lista
     public function listar( $msg = false ) {
+
+        // verifica se o usuario tem permissão
+        if( !$this->hasPermission( $this->grupo )) {
+            abort( 404 );            
+        }
         $grupos = Grupo::all();
         return view( 'grupos/grid', [ 'grupos' => $grupos, 'msg' => $msg, 'exibirForm' => false ] );
     }

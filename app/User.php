@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\DB;
 
 class User extends Authenticatable
 {
@@ -15,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'grupo_id'
+        'name', 'email', 'password'
     ];
 
     /**
@@ -31,7 +32,14 @@ class User extends Authenticatable
         return $this->hasOne( 'App\Models\Desenvolvedor' );
     }
 
-    public function grupo() {
-        return $this->belongsTo( 'App\Models\Grupo', 'grupo_id', 'idGrupo' );
+    public function grupos() {
+        return $this->belongsToMany( 'App\Models\Grupo', 'grupos_users', 'user_id', 'grupo_id' );
+    }
+
+    public function noGrupo( $user, $grupo ) {
+        return DB::select( "select * from grupos_users gu
+                            inner join users u on gu.user_id = u.id
+                            inner join grupos g on gu.grupo_id = g.idGrupo
+                            where u.id = :id and g.nome = :grupo", [ 'id' => $user, 'grupo' => $grupo ] );
     }
 }

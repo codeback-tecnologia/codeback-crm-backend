@@ -15,8 +15,8 @@ class Grupo extends Model {
     // nome
     protected $fillable = [ 'nome', 'entidade' ];
 
-    public function user() {
-        return $this->hasMany( 'App\User' );
+    public function users() {
+        return $this->belongsToMany( 'App\User', 'grupos_users', 'grupo_id', 'user_id' );
     }
 
     public function item() {

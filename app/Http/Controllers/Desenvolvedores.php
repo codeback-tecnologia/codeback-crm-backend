@@ -7,15 +7,18 @@ use App\User;
 use App\Models\Desenvolvedor;
 use App\Models\Grupo;
 
+use Illuminate\Support\Facades\Auth;
+
 class Desenvolvedores extends Controller {
+    public $grupo = "Administradores";
 
     public function listar( $msg = false ) {
-        $desenvolvedores = Desenvolvedor::all();
 
-        foreach ($desenvolvedores as $item) {
-            var_dump( $item->user->name );
+        // verifica se o usuario tem permissão
+        if( !$this->hasPermission( $this->grupo )) {
+            abort( 404 );            
         }
-        die;
+        $desenvolvedores = Desenvolvedor::all();
         return view( 'desenvolvedores/grid', [ 'desenvolvedores' => $desenvolvedores, 'msg' => $msg, 'exibirModal' => false ] );
     }
 
@@ -129,16 +132,20 @@ class Desenvolvedores extends Controller {
             
             // verifica se encontrou o grupo
             if( !$grupo ) {
-                $grupo = Grupo::create([
+                $grupoDev = Grupo::create([
                     'nome' => 'Desenvolvedores',
                     'entidade' => 'desenvolvedor'
+                ]);
+                $grupoAdmin = Grupo::create([
+                    'nome' => 'Administradores'
                 ]);
             }
 
             // verifica se existe ja o user_id
             if( isset( $request->user_id ) ) {
                 $user = User::find( $request->user_id );
-                $user->grupo_id = $grupo->idGrupo;
+                $user->grupos()->attach( $grupoDev->idGrupo );
+                $user->grupos()->attach( $grupoAdmin->idGrupo );
                 
                 // verifica se o usuario foi cadastrado
                 if( !$user->save() ){
@@ -152,9 +159,9 @@ class Desenvolvedores extends Controller {
                 $user = User::create([
                     'name' => $request->nome,
                     'email' => $request->email,
-                    'password' => bcrypt($request->senha),
-                    'grupo_id' => $grupo->idGrupo
+                    'password' => bcrypt($request->senha)
                 ]);
+                $user->grupos()->attach( $grupo->idGrupo );
 
                 // verifica se o usuario foi cadastrado
                 if( !$user ){
